@@ -1,0 +1,21 @@
+{
+  "name": "fullstack-skel",
+  "version": "1.0.0",
+  "description": "full stack (vue, express) skeleton",
+  "repository": "https://github.com/suaviloquence/fullstack-skel",
+  "author": "m",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "app",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "(cd shared && yarn dev) & (cd app && yarn dev) & (cd server && yarn dev)",
+    "build": "(cd shared && yarn build) & (cd app && yarn build) & (cd server && yarn build)"
+  },
+  "devDependencies": {
+    "eslint": "^8.12.0"
+  }
+}
