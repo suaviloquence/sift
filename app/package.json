@@ -1,5 +1,5 @@
 {
-  "name": "@fullstack-skel/app",
+  "name": "@sift/app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,7 @@
     "vue-class-component": "^8.0.0-0"
   },
   "devDependencies": {
-    "@fullstack-skel/shared": "1.0.0",
+    "@sift/shared": "1.0.0",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-service": "~5.0.0",

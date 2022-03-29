@@ -1,5 +1,5 @@
 {
-  "name": "@fullstack-skel/server",
+  "name": "@sift/server",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "express": "^4.17.3",
     "sequelize": "^6.17.0",
     "sqlite3": "^5.0.2",
-    "@fullstack-skel/shared": "1.0.0"
+    "@sift/shared": "1.0.0"
   },
   "scripts": {
     "dev": "nodemon src/index.ts",

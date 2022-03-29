@@ -1,8 +1,8 @@
 {
-  "name": "fullstack-skel",
+  "name": "sift",
   "version": "1.0.0",
-  "description": "full stack (vue, express) skeleton",
-  "repository": "https://github.com/suaviloquence/fullstack-skel",
+  "description": "",
+  "repository": "https://github.com/suaviloquence/sift",
   "author": "m",
   "license": "MIT",
   "private": true,

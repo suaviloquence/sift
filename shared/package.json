@@ -1,5 +1,5 @@
 {
-  "name": "@fullstack-skel/shared",
+  "name": "@sift/shared",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",

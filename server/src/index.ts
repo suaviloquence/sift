@@ -5,7 +5,7 @@ import { Sequelize } from "sequelize";
 
 import { config as dotenv } from "dotenv";
 
-import { hello } from "@fullstack-skel/shared";
+import { hello } from "@sift/shared";
 
 import { Hello } from "./db";
 
