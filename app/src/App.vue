@@ -1,18 +1,36 @@
 <template>
-  <hello-world />
+  <game v-if="socket != null" :socket="socket" :api="api" />
+  <connect v-else @connected="connect" />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-import HelloWorld from "./components/HelloWorld.vue";
+import API, { Socket } from "./api";
+import Connect from "./components/Connect.vue";
+import Game from "./components/Game.vue";
 
 @Options({
   components: {
-    HelloWorld,
+    Connect,
+    Game,
+  },
+  data() {
+    return {
+      socket: null,
+      api: null,
+    };
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  socket!: Socket | null;
+  api!: API | null;
+
+  connect(api: API) {
+    this.api = api;
+    this.socket = api.socket();
+  }
+}
 </script>
 
 <style></style>

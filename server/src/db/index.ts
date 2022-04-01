@@ -1,9 +1,7 @@
 import { Sequelize } from "sequelize";
 
-import Hello from "./hello";
+const sequelize = new Sequelize("sqlite::memory:");
 
-const sequelize = new Sequelize("sqlite:../database.sqlite3");
+const opts = { sequelize };
 
-Hello.init(Hello.data(), { sequelize });
-
-export { Hello };
+export default sequelize;
