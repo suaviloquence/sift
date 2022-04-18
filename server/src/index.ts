@@ -17,10 +17,10 @@ import {
   pointValue,
   MIN_WORD_LENGTH,
   MIN_ROOM_SIZE,
+  Results,
   DBG,
 } from "@sift/shared";
 import { getWords } from "./words";
-import { Results } from "@sift/shared/dist/room";
 
 dotenv();
 
@@ -133,11 +133,13 @@ io.on("connection", (socket) => {
   const room = rooms.get(room_code) as Room;
 
   socket.on("start", () => {
-    if (!room || room.players.size < MIN_ROOM_SIZE) return;
+    if (!room || room.players.size < MIN_ROOM_SIZE || room.start_lock) return;
+
+    room.start_lock = true;
 
     console.log(`Starting room ${player.room}`);
 
-    const DELAY = 10 * 1000; // 30 seconds
+    const delay = room.round_length * 1000;
 
     setTimeout(() => {
       const [players, max_words] = calculateResults(room.players);
@@ -148,11 +150,23 @@ io.on("connection", (socket) => {
         next: Date.now() + next_delay,
       });
 
-      setTimeout(
-        () => changeState(room_code, generateLeaderboard(room.players)),
-        next_delay
-      );
-    }, DELAY);
+      setTimeout(() => {
+        room.start_lock = false;
+        if (--room.rounds_left == 0) {
+          io.to(room_code).emit(
+            "finale",
+            generateLeaderboard(room.players).leaderboard
+          );
+          for (const player_id in room.players) {
+            global.players.delete(player_id) as Player;
+            sockets.delete(socket.id);
+          }
+          rooms.delete(room_code);
+        } else {
+          changeState(room_code, generateLeaderboard(room.players));
+        }
+      }, next_delay);
+    }, delay);
 
     room.players.forEach(
       (player_id) => ((players.get(player_id) as Player).words.length = 0)
@@ -161,22 +175,30 @@ io.on("connection", (socket) => {
     changeState(room_code, {
       state: "playing",
       letters: generateLetters(),
-      end: Date.now() + DELAY,
+      end: Date.now() + delay,
     });
   });
+
+  // socket.on("disconnect", () => {
+  //   room.players.delete(player_id);
+  //   sockets.delete(socket.id);
+  //   if (room.players.size == 0) rooms.delete(room_code);
+  // });
 
   socket.on("word", (word) => player.words.push(word));
 });
 
 app.use(bodyParser.json());
 
-app.post<never, API.Connect.Response, API.Connect.Request>(
-  "/api/connect",
+app.post<never, API.Join.Response, API.Join.Request>(
+  "/api/join",
   (req, res) => {
     const { name, room: room_code } = req.body;
 
     if (typeof name !== "string" || typeof room_code !== "string")
       return res.sendStatus(400);
+
+    if (!rooms.has(room_code)) return res.sendStatus(400);
 
     const player_id: PlayerID = crypto.randomUUID();
 
@@ -189,18 +211,50 @@ app.post<never, API.Connect.Response, API.Connect.Request>(
 
     players.set(player_id, player);
 
-    if (rooms.has(room_code)) {
-      const room = rooms.get(room_code) as Room;
-      room.players.add(player_id);
-      if (room.state.state === "lobby") {
-        room.state = generateLeaderboard(room.players);
-      }
-    } else {
-      rooms.set(room_code, {
-        state: generateLeaderboard([player_id]),
-        players: new Set([player_id]),
-      });
-    }
+    const room = rooms.get(room_code) as Room;
+    room.players.add(player_id);
+    if (room.state.state === "lobby")
+      room.state = generateLeaderboard(room.players);
+
+    res.json({ id: player_id });
+  }
+);
+
+app.post<never, API.Create.Response, API.Create.Request>(
+  "/api/create",
+  (req, res) => {
+    const { name, room: room_code, rounds, round_length } = req.body;
+
+    if (
+      typeof name !== "string" ||
+      typeof room_code !== "string" ||
+      typeof rounds !== "number" ||
+      rounds <= 0 ||
+      typeof round_length !== "number" ||
+      round_length <= 0
+    )
+      return res.sendStatus(400);
+
+    if (rooms.has(room_code)) return res.sendStatus(401);
+
+    const player_id: PlayerID = crypto.randomUUID();
+
+    const player = {
+      name,
+      room: room_code,
+      score: 0,
+      words: [],
+    };
+
+    players.set(player_id, player);
+
+    rooms.set(room_code, {
+      state: generateLeaderboard([player_id]),
+      players: new Set([player_id]),
+      rounds_left: rounds,
+      start_lock: false,
+      round_length,
+    });
 
     res.json({ id: player_id });
   }

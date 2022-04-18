@@ -1,8 +1,9 @@
-import { RoomState } from "./room";
+import { Leaderboard, RoomState } from "./room";
 
 export interface ServerToClient {
   state_change: (state: RoomState) => void;
   join: (name: string) => void;
+  finale: (leaderboard: Leaderboard) => void;
 }
 
 export interface ClientToServer {

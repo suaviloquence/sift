@@ -6,16 +6,58 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
 	<link rel="icon" href="<%= BASE_URL %>favicon.ico">
+	<link rel="stylesheet" href="https://meyerweb.com/eric/tools/css/reset/reset.css" />
 	<title>
 		<%= htmlWebpackPlugin.options.title %>
 	</title>
 	<style>
 		:root {
 			touch-action: manipulation;
+			font-family: sans-serif;
+		}
+
+		:root {
+			--base: #f1ffc4;
+			--alternate-light: #ffcaaf;
+			--alternate: #dab894;
+			--alternate-text: white;
+			--accent: #a7bed3;
+			--accent-text: white;
+		}
+
+		body {
+			background-color: var(--base);
 		}
 
 		input {
 			font-size: 1rem;
+		}
+
+		button {
+			/* get rid of 1em padding on ios */
+			appearance: none;
+			font-size: 1rem;
+		}
+
+		#app {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 100%;
+			background-color: var(--base);
+		}
+
+		#container {
+			width: 100vw;
+			height: 100vh;
+		}
+
+		@media (min-aspect-ratio: 1) {
+			#container {
+				width: 100vh;
+				height: 100vh;
+				margin: auto;
+			}
 		}
 	</style>
 </head>
@@ -25,7 +67,9 @@
 		<strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
 				Please enable it to continue.</strong>
 	</noscript>
-	<div id="app"></div>
+	<div id="container">
+		<div id="app"></div>
+	</div>
 	<!-- built files will be auto injected -->
 </body>
 

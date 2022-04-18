@@ -7,6 +7,7 @@ export {
   Results,
   MIN_ROOM_SIZE,
   Word,
+  Leaderboard,
 } from "./room";
 
 export { MIN_WORD_LENGTH, pointValue } from "./words";

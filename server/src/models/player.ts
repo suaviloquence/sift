@@ -1,4 +1,4 @@
-import { RoomCode } from ".";
+import { RoomCode, SocketID } from ".";
 
 export interface Player {
   name: string;

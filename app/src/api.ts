@@ -48,14 +48,34 @@ export default class API {
     });
   }
 
-  public static async connect(name: string, room: string): Promise<API> {
+  public static async join(name: string, room: string): Promise<API> {
     const res = await axios.post<
-      A.Connect.Response,
-      AxiosResponse<A.Connect.Response>,
-      A.Connect.Request
-    >("/api/connect", {
+      A.Join.Response,
+      AxiosResponse<A.Join.Response>,
+      A.Join.Request
+    >("/api/join", {
       name,
       room,
+    });
+
+    return new API(res.data.id, name, room);
+  }
+
+  public static async create(
+    name: string,
+    room: string,
+    rounds: number,
+    round_length: number
+  ): Promise<API> {
+    const res = await axios.post<
+      A.Create.Response,
+      AxiosResponse<A.Create.Response>,
+      A.Create.Request
+    >("/api/create", {
+      name,
+      room,
+      rounds,
+      round_length,
     });
 
     return new API(res.data.id, name, room);

@@ -1,12 +1,14 @@
 export interface Lobby {
   state: "lobby";
-  leaderboard: LobbyPlayer[];
+  leaderboard: Leaderboard;
 }
 
 interface LobbyPlayer {
   name: string;
   score: number;
 }
+
+export type Leaderboard = LobbyPlayer[];
 
 export interface Playing {
   state: "playing";

@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="root">
     <ol>
       <li v-for="player in state.leaderboard" :key="player.name">
-        <strong>{{ player.name }}</strong
+        <span class="name">{{ player.name }}</span
         >: {{ player.score }}
       </li>
     </ol>
@@ -31,4 +31,34 @@ export default class Lobby extends Vue {
 }
 </script>
 
-<style></style>
+<style scoped>
+.root {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin: 5%;
+  height: 100%;
+}
+
+ol {
+  flex-basis: 80%;
+}
+
+button {
+  flex-basis: 10%;
+  background-color: var(--alternate);
+  border-radius: 5vw;
+  border: none;
+  font-size: 3rem;
+  color: var(--alternate-text);
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--alternate-light);
+}
+
+.name {
+  font-weight: bold;
+}
+</style>

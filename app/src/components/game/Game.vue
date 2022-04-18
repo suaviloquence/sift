@@ -1,17 +1,21 @@
 <template>
-  <div>
-    <lobby
-      v-if="state.state === 'lobby'"
-      :state="state"
-      @start="socket.emit('start')"
-    />
-    <playing
-      v-else-if="state.state === 'playing'"
-      :state="state"
-      @word="(word) => socket.emit('word', word)"
-    />
-    <results v-else-if="state.state === 'results'" :state="state" />
+  <div id="top">
+    {{ api.name }}
+    <span id="room">ROOM: {{ api.room }}</span>
   </div>
+  <lobby
+    id="main"
+    v-if="state.state === 'lobby'"
+    :state="state"
+    @start="socket.emit('start')"
+  />
+  <playing
+    id="main"
+    v-else-if="state.state === 'playing'"
+    :state="state"
+    @word="(word) => socket.emit('word', word)"
+  />
+  <results v-else-if="state.state === 'results'" :state="state" id="main" />
 </template>
 
 <script lang="ts">
@@ -20,9 +24,9 @@ import { Socket } from "socket.io-client";
 import API, { Socket as SocketType } from "@/api";
 import { RoomState, DBG } from "@sift/shared";
 
-import Playing from "./states/Playing.vue";
-import Lobby from "./states/Lobby.vue";
-import Results from "./states/Results.vue";
+import Playing from "./Playing.vue";
+import Lobby from "./Lobby.vue";
+import Results from "./Results.vue";
 
 @Options({
   components: {
@@ -38,6 +42,7 @@ import Results from "./states/Results.vue";
       },
     };
   },
+  emits: ["finale"],
   props: {
     socket: Socket,
     api: API,
@@ -59,14 +64,31 @@ export default class Game extends Vue {
     });
     this.socket.on("state_change", (state) => (this.state = state));
 
+    this.socket.on("finale", (leaderboard) =>
+      this.$emit("finale", leaderboard)
+    );
+
     this.socket.on(
       "connect",
       async () => (this.state = await this.api.roomState())
     );
-
-    this.socket.on("connect", () => console.log("Connected."));
   }
 }
 </script>
 
-<style></style>
+<style>
+#top {
+  flex-basis: 10%;
+  background-color: var(--alternate);
+  color: var(--alternate-text);
+  font-size: 2rem;
+  width: 100%;
+  text-align: center;
+  justify-self: center;
+}
+
+#main {
+  flex-basis: 90%;
+  margin: 1%;
+}
+</style>
